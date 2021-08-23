@@ -1,0 +1,46 @@
+
+<div id="playerWrapOuter">
+    <div id="playerWrap">
+        <?php 
+            $embed = '<iframe width="100%" height="450" src="https://www.youtube.com/embed/'.$matches[0].'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            preg_match('/src="(.+?)"/', $embed, $matches);
+            $src = $matches[1];
+            $params = array(
+                'width'          => "100%",
+                'height'         => "450",
+                'enablejsapi'    => 1,
+                'rel'            => 0,
+                'modestbranding' => 1,
+                'showinfo'       => 0,
+            );
+
+
+            $querystring  = http_build_query($params, $src);
+            $new_src = $src.'?'. $querystring;
+            $embed = str_replace($src, $new_src, $embed);
+            $embed = str_replace( '<iframe ', '<iframe ', $embed );
+
+            echo $embed; 
+        ?>
+    </div>
+</div>
+<script>
+    (function() {
+        var player;
+        var playerFrame = document.currentScript.previousElementSibling.querySelector("iframe");
+
+        window.onYouTubeIframeAPIReady = function() {
+            player = new YT.Player(playerFrame, {
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        };
+        window.onPlayerStateChange = function(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                player.stopVideo();
+            }
+        };
+
+    })();
+</script>
